@@ -1,6 +1,6 @@
-package Padaria;
+import com.produtos.*;
+import com.user.Cliente;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Padaria {
