@@ -4,6 +4,7 @@ public class Paodequeijo extends Mercadoria {
     public Paodequeijo(int quantidade) {
         super("Pão de queijo", quantidade);
     }
+    @Override
     public double calculaPreco (int quantia){
         return (quantia * 1.50);
     }

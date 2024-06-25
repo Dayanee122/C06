@@ -18,11 +18,14 @@ public abstract class Mercadoria {
     }
 
     public int getQuantidade() {
-        return quantidade;}
+        return quantidade;
+    }
     //setters
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
     }
+
+    public abstract double calculaPreco (int quantia);
     
     //public abstract String descricao();
 }

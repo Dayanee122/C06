@@ -8,17 +8,17 @@ import java.util.Map;
 
 public class Cliente {
     // Atributos
-    private String cpf;
-    private String nome;
-    private String telefone;
+    private String cpf, nome, telefone,  senha;
+    private boolean adm = false;
     Map<String,Integer> comprasMap;
 
     // Construtor
-    public Cliente(String nome, String cpf, String telefone, Map<String, Integer> comprasMap) {
+    public Cliente(String nome, String cpf, String telefone, Map<String, Integer> comprasMap ,String senha) {
         this.cpf = cpf;
         this.nome = nome;
         this.telefone = telefone;
         this.comprasMap = comprasMap;
+        this.senha = senha;
     }
 
     /*public double calcularValorTotal() {
@@ -52,9 +52,18 @@ public class Cliente {
     public String getNome() {
         return nome;
     }
+    public String getSenha() {
+        return senha;
+    }
 
     public String getTelefone() {
         return telefone;
+    }
+    public void getCarrinho(){
+//        for (Map.Entry<Mercadoria, Integer> entry : comprasMap.entrySet()) {
+//            Mercadoria mercadoria = entry.getKey();
+//            int quantidade = entry.getValue();
+//        }
     }
     public void setCpf(String cpf) {
         this.cpf = cpf;
