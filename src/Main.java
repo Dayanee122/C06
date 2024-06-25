@@ -72,6 +72,8 @@ public class Main {
                     System.out.println("\nCrie uma senha para o cliente: ");
                     senha = cin.nextLine();
 
+                    // ADICIONAR VERIFICACAO DE EXISTENCIA DE USUARIO
+
                     clienteSet.add(new Cliente(nome,cpf,telefone,mapaCarrinhodeCompras, senha));
                     break;
 
