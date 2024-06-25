@@ -1,4 +1,4 @@
-package com.produtos;
+package br.inatel.c06.produtos;
 
 public abstract class Mercadoria {
     // Atributos
@@ -7,9 +7,8 @@ public abstract class Mercadoria {
     protected int quantidade; // quantidade disponível
 
     // Construtor
-    public Mercadoria(String nome, double preco, int quantidade) {
+    public Mercadoria(String nome, int quantidade) {
         this.nome = nome;
-        this.preco = preco;
         this.quantidade = quantidade;
     }
 
@@ -18,17 +17,12 @@ public abstract class Mercadoria {
         return nome;
     }
 
-    public double getPreco() {
-        return preco;
-    }
-
     public int getQuantidade() {
-        return quantidade;
+        return quantidade;}
+    //setters
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
     }
-
-    public double calcularTotalPreco() {
-        return preco * quantidade;
-    }
-
-    public abstract String descricao();
+    
+    //public abstract String descricao();
 }
