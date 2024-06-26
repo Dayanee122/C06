@@ -180,6 +180,21 @@ public class Main {
                 }//switch
             }//while escolha da mercadoria
         }//whilhe menu inicial
+        //saída de dados - TESTAR
+        System.out.println("=============================================================================\n");
+        for (Cliente clientes : clienteSet){
+            System.out.println("Dados do cliente: ");
+            System.out.println("Nome: " + cliente.getNome());
+            System.out.println("CPF: " + cliente.getCpf());
+            System.out.println("Telefone: " + cliente.getTelefone());
+            System.out.println("Carrinho de compras: ");
+            mapaCarrinhodeCompras.forEach((chave, valor) -> {
+            System.out.println("Mercadoria: " + chave);
+            System.out.println("Quantidade: " + valor);
+            System.out.println("=============================================================================\n");
+        });
+
+        }
     }//main
 
 //        System.out.println("Cliente: " + cliente.getNome());
@@ -198,12 +213,9 @@ public class Main {
 //            System.out.println("Mercadoria: " + chave);
 //            System.out.println("Quantidade: " + valor);
 //        });
-
-
     private static void addMercadoria(Set<Mercadoria> mercadorias, String item, Cliente cliente) {
         int qnt;
         Scanner cin = new Scanner(System.in);
-
         for(Mercadoria i:mercadorias){
             if (Objects.equals(i.getNome(), item)) {
                 try {
@@ -213,11 +225,13 @@ public class Main {
                     qnt = cin.nextInt();
                     cliente.adicionarCompra(i, qnt);
                     System.out.println("O valor acrescido no carrinho é de R$ " + i.calculaPreco(qnt));
+                    cliente.calcularValorTotal(i, qnt);
                 }catch (SemEstoqueException e){
                     System.out.println(e);
                 }
                 break;
             }
+
         }
     }
 }
@@ -227,3 +241,4 @@ public class Main {
 //escrita do arquivo do carrinho de compras dos clientes
 //saída de dados: saída dos carrinhos de compras gerados durante a rodagem do código - hashMap
 //calcula valor total do carrinho
+//fazer interface
