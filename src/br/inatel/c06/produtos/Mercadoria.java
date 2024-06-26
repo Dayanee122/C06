@@ -24,8 +24,6 @@ public abstract class Mercadoria {
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
     }
-
     public abstract double calculaPreco (int quantia);
-    
-    //public abstract String descricao();
+
 }

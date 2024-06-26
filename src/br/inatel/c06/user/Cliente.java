@@ -9,7 +9,6 @@ import java.util.Map;
 public class Cliente {
     // Atributos
     private String cpf, nome, telefone,  senha;
-    private boolean adm = false;
     Map<String,Integer> comprasMap;
 
     // Construtor
@@ -35,7 +34,7 @@ public class Cliente {
         if (item.getQuantidade() >= qnt) {
             this.comprasMap.put(item.getNome(), qnt);
             item.setQuantidade(item.getQuantidade() - qnt);
-            System.out.println("Adicionando " +qnt+ " unidasdes no carrinho;");
+            System.out.println("Adicionando " + qnt + " unidasdes no carrinho;");
         }
         else
             throw new SemEstoqueException("A quatidade solicitada esta acima da quantidade em estoque!");
@@ -72,7 +71,6 @@ public class Cliente {
     public void setNome(String nome) {
         this.nome = nome;
     }
-
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }

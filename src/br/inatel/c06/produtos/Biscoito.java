@@ -9,8 +9,4 @@ public class Biscoito extends Mercadoria {
         return (quantia * 2.00);
     }
 
-    /*@Override
-    public String descricao() {
-        return getNome() + " - Preço: R$" + String.format("%.2f", getPreco()) + " - Quantidade: " + getQuantidade();
-    }*/
 }
