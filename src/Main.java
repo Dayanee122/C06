@@ -2,24 +2,28 @@ import br.inatel.c06.exceptions.SemEstoqueException;
 import br.inatel.c06.produtos.*;
 import br.inatel.c06.user.Cliente;
 
-import javax.swing.plaf.IconUIResource;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-
         int opcao = 0, cont = 0;
         boolean start = true, sair = true;
         String nome, senha, cpf, telefone;
+        //arquivo
+        Path arquivoADM = Paths.get("AdministracaoEstoque");
 
-        Set<Cliente> clienteSet = new HashSet<>();
-        Set<Mercadoria> mercadorias = new HashSet<>();
+        Set<Cliente> clienteSet = new HashSet<>(); //armazena os dados dos clientes
+        Set<Mercadoria> mercadorias = new HashSet<>(); //armazena a quantidade em estoque das mercadorias produzidas
         Scanner cin = new Scanner(System.in);
         Map<String, Integer> mapaCarrinhodeCompras = new HashMap<>();
 
         Cliente cliente = new Cliente(null, null, null, mapaCarrinhodeCompras, null);
 
-        //clienteSet.add(new Cliente("teste", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
+        clienteSet.add(new Cliente("teste", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
         //clienteSet.add(new Cliente("Nat", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
 
 
@@ -86,21 +90,30 @@ public class Main {
                     }
                     break;
                 //cadastro
-                case 2:
+                case 2: {
                     //dados do cliente
                     System.out.println("\nDigite o nome do cliente: ");
                     nome = cin.next();
                     System.out.println("\nDigite o CPF do cliente: ");
                     cpf = cin.next();
-                    System.out.println("\nDigite o telefone do cliente: ");
-                    telefone = cin.next();
-                    System.out.println("\nCrie uma senha para o cliente: ");
-                    senha = cin.next();
-
-                    // ADICIONAR VERIFICACAO DE EXISTENCIA DE USUARIO
-
-                    clienteSet.add(new Cliente(nome, cpf, telefone, mapaCarrinhodeCompras, senha));
+                    //VERIFICACAO DE EXISTENCIA DE USUARIO
+                    for (Cliente i : clienteSet) {
+                        if (Objects.equals(i.getCpf(), cpf)) {
+                            System.out.println("\nUsuário já existente.");
+                            System.out.println("Retornando ao menu incial para login.");
+                            opcao = 9;
+                            break;
+                        } else {
+                            System.out.println("\nDigite o telefone do cliente: ");
+                            telefone = cin.next();
+                            System.out.println("\nCrie uma senha para o cliente: ");
+                            senha = cin.next();
+                            clienteSet.add(new Cliente(nome, cpf, telefone, mapaCarrinhodeCompras, senha));
+                            break;
+                        }
+                    }
                     break;
+                }
                 //finalização do atendimento
                 case 9:
                     System.out.println("\nO atendimento está sendo finalizado...\n");
@@ -114,6 +127,19 @@ public class Main {
             }
 
             //definição das quantidades disponíveis de cada mercadoria
+            try {
+                List<String> estoque = Files.readAllLines(arquivoADM);
+                Map <String,String> AdministracaoEstoque = new HashMap<>();
+                estoque.forEach((linha) -> {
+                    String[] linhaQuebrada = linha.split(":");
+                    AdministracaoEstoque.put(linhaQuebrada[0],linhaQuebrada[1].strip());
+                });
+                AdministracaoEstoque.forEach((mercadoria, quantidadeDisponivel) -> {
+
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             mercadorias.add(new PaoFrances(250));
             mercadorias.add(new Paodequeijo(18));
             mercadorias.add(new Biscoito(20));

@@ -6,7 +6,7 @@ public class Biscoito extends Mercadoria {
     }
     @Override
     public double calculaPreco (int quantia){
-        return (quantia * 2.00);
+        return (quantia * 1.00);
     }
 
 }

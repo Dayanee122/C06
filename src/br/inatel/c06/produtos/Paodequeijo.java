@@ -6,7 +6,7 @@ public class Paodequeijo extends Mercadoria {
     }
     @Override
     public double calculaPreco (int quantia){
-        return (quantia * 1.50);
+        return (quantia * 1.25);
     }
 
 }

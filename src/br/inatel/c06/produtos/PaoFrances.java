@@ -6,6 +6,6 @@ public class PaoFrances extends Mercadoria{
     }
     @Override
     public double calculaPreco (int quantia){
-        return (quantia * 0.60);
+        return (quantia * 0.70);
     }
 }
