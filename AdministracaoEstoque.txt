@@ -1,4 +1,4 @@
-1 - Pão Francês : 1000
-2 - Pão de Queijo : 200
-3 - Biscoito : 250
-4 - Broa : 150
+Biscoito:200
+Pão de Queijo:200
+Broa:150
+Pão Francês:900

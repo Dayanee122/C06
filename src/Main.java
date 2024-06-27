@@ -2,7 +2,8 @@ import br.inatel.c06.exceptions.SemEstoqueException;
 import br.inatel.c06.produtos.*;
 import br.inatel.c06.user.Cliente;
 
-import java.io.IOException;
+import java.awt.datatransfer.FlavorListener;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,7 +15,7 @@ public class Main {
         boolean start = true, sair = true;
         String nome, senha, cpf, telefone;
         //arquivo
-        Path arquivoADM = Paths.get("AdministracaoEstoque");
+        Path arquivoADM = Paths.get("AdministracaoEstoque.txt");
 
         Set<Cliente> clienteSet = new HashSet<>(); //armazena os dados dos clientes
         Set<Mercadoria> mercadorias = new HashSet<>(); //armazena a quantidade em estoque das mercadorias produzidas
@@ -23,8 +24,10 @@ public class Main {
 
         Cliente cliente = new Cliente(null, null, null, mapaCarrinhodeCompras, null);
 
+        lerEstoque(mercadorias);
+
         clienteSet.add(new Cliente("teste", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
-        //clienteSet.add(new Cliente("Nat", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
+        clienteSet.add(new Cliente("Nat", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
 
 
         while (sair) {
@@ -127,23 +130,21 @@ public class Main {
             }
 
             //definição das quantidades disponíveis de cada mercadoria
-            try {
-                List<String> estoque = Files.readAllLines(arquivoADM);
-                Map <String,String> AdministracaoEstoque = new HashMap<>();
-                estoque.forEach((linha) -> {
-                    String[] linhaQuebrada = linha.split(":");
-                    AdministracaoEstoque.put(linhaQuebrada[0],linhaQuebrada[1].strip());
-                });
-                AdministracaoEstoque.forEach((mercadoria, quantidadeDisponivel) -> {
+//            try {
+//                List<String> estoque = Files.readAllLines(arquivoADM);
+//                Map <String, Integer> AdministracaoEstoque = new HashMap<>();
+//
+//                estoque.forEach((linha) -> {
+//                    String[] linhaQuebrada = linha.split(":");
+//                    AdministracaoEstoque.put(linhaQuebrada[0],linhaQuebrada[1].strip());
+//                });
+//                AdministracaoEstoque.forEach((mercadoria, quantidadeDisponivel) -> {
+//                    mercadorias.add(mercadoria,quantidadeDisponivel);
+//                });
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mercadorias.add(new PaoFrances(250));
-            mercadorias.add(new Paodequeijo(18));
-            mercadorias.add(new Biscoito(20));
-            mercadorias.add(new Broa(10));
 
             while (opcao != 9) {
                 System.out.println("\nDigite a opção desejada:" +
@@ -203,7 +204,20 @@ public class Main {
                 }//switch
             }//while escolha da mercadoria
         }//whilhe menu inicial
-        //saída de dados - TESTAR
+
+        //atualizando o arquivo de Estoque
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(String.valueOf(arquivoADM)))){
+            for(Mercadoria i:mercadorias) {
+                bw.write(i.getNome() + ":" + i.getQuantidade());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        //saída de dados - TESTAR (quase funcionando perfeitamente)
+
         System.out.println("=============================================================================\n");
         for (Cliente clientes : clienteSet) {
             if (clientes.getNome() != null) {
@@ -243,10 +257,38 @@ public class Main {
             }
         }
     }
+
+    private static void lerEstoque(Set<Mercadoria> mercadorias){
+        // Leitura do arquivo de estoque e salvamento no set de mercadorias
+        try (BufferedReader br = new BufferedReader(new FileReader("AdministracaoEstoque.txt"))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+
+                StringTokenizer st = new StringTokenizer(linha, ":");
+                String produto = st.nextToken();
+                int qnt = Integer.parseInt(st.nextToken());
+
+                if (Objects.equals(produto, "Pão Francês"))
+                {
+                    mercadorias.add(new PaoFrances(qnt));
+                }else if(Objects.equals(produto, "Pão de Queijo")){
+                    mercadorias.add(new Paodequeijo(qnt));
+                }else if(Objects.equals(produto, "Biscoito")){
+                    mercadorias.add(new Biscoito(qnt));
+                }else if(Objects.equals(produto, "Broa")){
+                    mercadorias.add(new Broa(qnt));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 //A fazer:
 //escrita no arquivo (externamente) e leitura do arquivo de gerenciamento de estoque - "alterar definição das quantidades disponíveis de cada mercadoria"
 //escrita e leitura do arquivo dos logins dos clientes
 //escrita do arquivo do carrinho de compras dos clientes
+//carrinho igual para todos os usuarios
+//add no nome sempre tornar minuscula
 
 
