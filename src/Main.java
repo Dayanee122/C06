@@ -19,8 +19,9 @@ public class Main {
 
         Cliente cliente = new Cliente(null, null, null, mapaCarrinhodeCompras, null);
 
-        clienteSet.add(new Cliente("teste", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
-        clienteSet.add(new Cliente("Nat", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
+        //clienteSet.add(new Cliente("teste", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
+        //clienteSet.add(new Cliente("Nat", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
+
 
         while (sair) {
             System.out.println("=============================================================================\n");
@@ -36,6 +37,7 @@ public class Main {
             System.out.println("\n=============================================================================");
 
             switch (opcao) {
+                //login
                 case 1:
                     while (true) {
                         if (cont != 0) {
@@ -46,12 +48,10 @@ public class Main {
                                 System.out.println("Valor inserido invalido! Tente novamente...");
                                 opcao = cin.nextInt();
                             }
-
                             if (opcao == 9) {
                                 cont = 0;
                                 break;
                             }
-
                         }
                         cont++;
                         System.out.println("\nDigite o nome do cliente: ");
@@ -85,7 +85,7 @@ public class Main {
                         System.out.println("\nCliente nao encontrado. Tente novamente...");
                     }
                     break;
-
+                //cadastro
                 case 2:
                     //dados do cliente
                     System.out.println("\nDigite o nome do cliente: ");
@@ -101,7 +101,7 @@ public class Main {
 
                     clienteSet.add(new Cliente(nome, cpf, telefone, mapaCarrinhodeCompras, senha));
                     break;
-
+                //finalização do atendimento
                 case 9:
                     System.out.println("\nO atendimento está sendo finalizado...\n");
                     sair = false;
@@ -120,7 +120,6 @@ public class Main {
             mercadorias.add(new Broa(10));
 
             while (opcao != 9) {
-
                 System.out.println("\nDigite a opção desejada:" +
                         "\n1 - Selecionar produtos" +
                         "\n9 - Voltar ao menu");
@@ -128,6 +127,7 @@ public class Main {
                 opcao = cin.nextInt();
 
                 switch (opcao) {
+                    //escolhendo a mercadoria
                     case 1:
                         cont = 0;
                         while (cont == 0) {
@@ -138,7 +138,7 @@ public class Main {
                             System.out.println("4 - Broa");
 
                             opcao = cin.nextInt();
-
+                            //adicionando mercadoria
                             switch (opcao) {
                                 case 1: {
 
@@ -164,18 +164,14 @@ public class Main {
                                     addMercadoria(mercadorias, item, cliente);
                                     cont++;
                                     break;
-
                                 }
                                 default:
                                     System.out.println("\nOpção inválida. Tente novamente.");
                             }
-
                         }
                         break;
-
                         case 9:
                             break;
-
                         default:
                             System.out.println("\nOpção inválida. Tente novamente.");
                 }//switch
@@ -183,19 +179,21 @@ public class Main {
         }//whilhe menu inicial
         //saída de dados - TESTAR
         System.out.println("=============================================================================\n");
-        System.out.println("Dados do cliente: ");
-        System.out.println("Nome: " + cliente.getNome());
-        System.out.println("CPF: " + cliente.getCpf());
-        System.out.println("Telefone: " + cliente.getTelefone());
-        System.out.println("Carrinho de compras: ");
-        mapaCarrinhodeCompras.forEach((chave, valor) -> {
-            System.out.println("Mercadoria: " + chave);
-            System.out.println("Quantidade: " + valor);
-
-        });
-        System.out.println("O valor total do carrinho de compras de "+ cliente.getNome()+ " é de R$ " +cliente.getTotalCompra()); // ajustar
-            System.out.println("\n=============================================================================\n");
-
+        for (Cliente clientes : clienteSet) {
+            if (clientes.getNome() != null) {
+                System.out.println("Dados do cliente ");
+                System.out.println("Nome: " + clientes.getNome());
+                System.out.println("CPF: " + clientes.getCpf());
+                System.out.println("Telefone: " + clientes.getTelefone());
+                System.out.println("Carrinho de compras: ");
+                mapaCarrinhodeCompras.forEach((chave, valor) -> {
+                    System.out.println("Mercadoria: " + chave);
+                    System.out.println("Quantidade: " + valor);
+                });
+                System.out.println("O valor total do carrinho de compras de " + clientes.getNome() + " é de R$ " + clientes.getTotalCompra()); // ajustar
+                System.out.println("\n=============================================================================\n");
+            }
+        }
         /*
         for (Cliente clientes : clienteSet){
             System.out.println("Dados do cliente: ");
@@ -214,10 +212,6 @@ public class Main {
         }*/
     }//main
 
-//        System.out.println("Cliente: " + cliente.getNome());
-//        System.out.println("CPF: " + cliente.getCpf());
-//        System.out.println("Telefone: " + cliente.getTelefone());
-
 
         /*for (Map.Entry<Mercador, Integer> entry : cliente.getCompras().entrySet()) {
             Mercadoria mercadoria = entry.getKey();
@@ -230,7 +224,6 @@ public class Main {
 //            System.out.println("Mercadoria: " + chave);
 //            System.out.println("Quantidade: " + valor);
 //        });
-
     private static void addMercadoria(Set<Mercadoria> mercadorias, String item, Cliente cliente) {
         int qnt;
         double total;
@@ -244,6 +237,7 @@ public class Main {
                     System.out.println("Digite a quantidade de " + item + " que deseja adicionar ao carrinho:");
                     qnt = cin.nextInt();
                     cliente.adicionarCompra(i, qnt);
+                    cliente.calcularValorTotal(i, qnt);
                     System.out.println("O valor acrescido no carrinho é de R$ " + i.calculaPreco(qnt));
                 }catch (SemEstoqueException e){
                     System.out.println(e);
