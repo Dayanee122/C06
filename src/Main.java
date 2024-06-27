@@ -194,42 +194,13 @@ public class Main {
                 System.out.println("\n=============================================================================\n");
             }
         }
-        /*
-        for (Cliente clientes : clienteSet){
-            System.out.println("Dados do cliente: ");
-            System.out.println("Nome: " + cliente.getNome());
-            System.out.println("CPF: " + cliente.getCpf());
-            System.out.println("Telefone: " + cliente.getTelefone());
-            System.out.println("Carrinho de compras: ");
-            mapaCarrinhodeCompras.forEach((chave, valor) -> {
-                System.out.println("Mercadoria: " + chave);
-                System.out.println("Quantidade: " + valor);
-
-            });
-            System.out.println();
-            System.out.println("=============================================================================\n");
-
-        }*/
     }//main
 
-
-        /*for (Map.Entry<Mercador, Integer> entry : cliente.getCompras().entrySet()) {
-            Mercadoria mercadoria = entry.getKey();
-            int quantidade = entry.getValue();
-            System.out.println(mercadoria.descricao() + " - Quantidade: " + quantidade);
-        }*/
-
-//        System.out.println("O carrinho de compras foi finalizado!");
-//        mapaCarrinhodeCompras.forEach((chave, valor) -> {
-//            System.out.println("Mercadoria: " + chave);
-//            System.out.println("Quantidade: " + valor);
-//        });
     private static void addMercadoria(Set<Mercadoria> mercadorias, String item, Cliente cliente) {
         int qnt;
         double total;
         Scanner cin = new Scanner(System.in);
         for(Mercadoria i:mercadorias){
-
             if (Objects.equals(i.getNome(), item)) {
                 try {
                     System.out.println("Veja o que temos em estoque hoje");
@@ -251,5 +222,5 @@ public class Main {
 //escrita no arquivo (externamente) e leitura do arquivo de gerenciamento de estoque - "alterar definição das quantidades disponíveis de cada mercadoria"
 //escrita e leitura do arquivo dos logins dos clientes
 //escrita do arquivo do carrinho de compras dos clientes
-//saída de dados: saída dos carrinhos de compras gerados durante a rodagem do código - hashMap
-//calcula valor total do carrinho
+
+
