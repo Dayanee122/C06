@@ -9,6 +9,7 @@ import java.util.Map;
 public class Cliente {
     // Atributos
     private String cpf, nome, telefone,  senha;
+    private double totalCompra;
     Map<String,Integer> comprasMap;
 
     // Construtor
@@ -27,6 +28,8 @@ public class Cliente {
         return cpf;
     }
 
+    public double getTotalCompra() {  return totalCompra; }
+
     public String getNome() {
         return nome;
     }
@@ -36,15 +39,16 @@ public class Cliente {
     public String getTelefone() {
         return telefone;
     }
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
+
     //setters
     public void setNome(String nome) {
         this.nome = nome;
     }
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public void adicionarCompra(Mercadoria item, int qnt){
@@ -57,11 +61,12 @@ public class Cliente {
         else
             throw new SemEstoqueException("A quatidade solicitada esta acima da quantidade em estoque!");
     }
-
+    double total = 0;
         public double calcularValorTotal(Mercadoria item, int qnt) {
-        double total = 0;
-        total += item.calculaPreco(item.getQuantidade());
-        return total;
+
+        totalCompra += item.calculaPreco(item.getQuantidade());
+
+        return totalCompra;
     }
 
 

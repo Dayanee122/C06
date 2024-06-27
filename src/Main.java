@@ -20,6 +20,7 @@ public class Main {
         Cliente cliente = new Cliente(null, null, null, mapaCarrinhodeCompras, null);
 
         clienteSet.add(new Cliente("teste", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
+        clienteSet.add(new Cliente("Nat", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
 
         while (sair) {
             System.out.println("=============================================================================\n");
@@ -102,7 +103,7 @@ public class Main {
                     break;
 
                 case 9:
-                    System.out.println("\nO atendimento está sendo finalizado...");
+                    System.out.println("\nO atendimento está sendo finalizado...\n");
                     sair = false;
                     break;
 
@@ -182,6 +183,20 @@ public class Main {
         }//whilhe menu inicial
         //saída de dados - TESTAR
         System.out.println("=============================================================================\n");
+        System.out.println("Dados do cliente: ");
+        System.out.println("Nome: " + cliente.getNome());
+        System.out.println("CPF: " + cliente.getCpf());
+        System.out.println("Telefone: " + cliente.getTelefone());
+        System.out.println("Carrinho de compras: ");
+        mapaCarrinhodeCompras.forEach((chave, valor) -> {
+            System.out.println("Mercadoria: " + chave);
+            System.out.println("Quantidade: " + valor);
+
+        });
+        System.out.println("O valor total do carrinho de compras de "+ cliente.getNome()+ " é de R$ " +cliente.getTotalCompra()); // ajustar
+            System.out.println("\n=============================================================================\n");
+
+        /*
         for (Cliente clientes : clienteSet){
             System.out.println("Dados do cliente: ");
             System.out.println("Nome: " + cliente.getNome());
@@ -189,12 +204,14 @@ public class Main {
             System.out.println("Telefone: " + cliente.getTelefone());
             System.out.println("Carrinho de compras: ");
             mapaCarrinhodeCompras.forEach((chave, valor) -> {
-            System.out.println("Mercadoria: " + chave);
-            System.out.println("Quantidade: " + valor);
-            System.out.println("=============================================================================\n");
-        });
+                System.out.println("Mercadoria: " + chave);
+                System.out.println("Quantidade: " + valor);
 
-        }
+            });
+            System.out.println();
+            System.out.println("=============================================================================\n");
+
+        }*/
     }//main
 
 //        System.out.println("Cliente: " + cliente.getNome());
@@ -213,10 +230,13 @@ public class Main {
 //            System.out.println("Mercadoria: " + chave);
 //            System.out.println("Quantidade: " + valor);
 //        });
+
     private static void addMercadoria(Set<Mercadoria> mercadorias, String item, Cliente cliente) {
         int qnt;
+        double total;
         Scanner cin = new Scanner(System.in);
         for(Mercadoria i:mercadorias){
+
             if (Objects.equals(i.getNome(), item)) {
                 try {
                     System.out.println("Veja o que temos em estoque hoje");
@@ -225,13 +245,11 @@ public class Main {
                     qnt = cin.nextInt();
                     cliente.adicionarCompra(i, qnt);
                     System.out.println("O valor acrescido no carrinho é de R$ " + i.calculaPreco(qnt));
-                    cliente.calcularValorTotal(i, qnt);
                 }catch (SemEstoqueException e){
                     System.out.println(e);
                 }
                 break;
             }
-
         }
     }
 }
@@ -241,4 +259,3 @@ public class Main {
 //escrita do arquivo do carrinho de compras dos clientes
 //saída de dados: saída dos carrinhos de compras gerados durante a rodagem do código - hashMap
 //calcula valor total do carrinho
-//fazer interface
