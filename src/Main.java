@@ -2,6 +2,7 @@ import br.inatel.c06.exceptions.SemEstoqueException;
 import br.inatel.c06.produtos.*;
 import br.inatel.c06.user.Cliente;
 
+import javax.swing.plaf.IconUIResource;
 import java.awt.datatransfer.FlavorListener;
 import java.io.*;
 import java.nio.file.Files;
@@ -14,21 +15,20 @@ public class Main {
         int opcao = 0, cont = 0;
         boolean start = true, sair = true;
         String nome, senha, cpf, telefone;
-        //arquivo
-        Path arquivoADM = Paths.get("AdministracaoEstoque.txt");
-
-        Set<Cliente> clienteSet = new HashSet<>(); //armazena os dados dos clientes
-        Set<Mercadoria> mercadorias = new HashSet<>(); //armazena a quantidade em estoque das mercadorias produzidas
         Scanner cin = new Scanner(System.in);
-        Map<String, Integer> mapaCarrinhodeCompras = new HashMap<>();
 
-        Cliente cliente = new Cliente(null, null, null, mapaCarrinhodeCompras, null);
+        //arquivos
+        Path arquivoADM = Paths.get("AdministracaoEstoque.txt"); //arquivo controle de estoque
+        Path arquivoCliente = Paths.get("Clientes.txt"); //arquivo login clientes
+        Path arquivoCozinha = Paths.get("Cozinha.txt"); //arquivo direcionado a cozinha
 
-        lerEstoque(mercadorias);
+        Set<Cliente>  clienteSet= new HashSet<>(); //armazena os dados dos clientes
+        Set<Mercadoria> estoque = new HashSet<>(); //armazena a quantidade em estoque das mercadorias produzidas
+        Set<Mercadoria> cozinha = new HashSet<>(); //armazena a quantidade total de itens pedidos
 
-        clienteSet.add(new Cliente("teste", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
-        clienteSet.add(new Cliente("Nat", "cpf", "telefone", mapaCarrinhodeCompras, "123"));
-
+        //leitura dos arquivos
+        lerEstoque(estoque, cozinha);
+        lerCliente(clienteSet);
 
         while (sair) {
             System.out.println("=============================================================================\n");
@@ -36,16 +36,18 @@ public class Main {
                 System.out.println("Bem Vindo!");
                 start = false;
             }
+            //menu inicial
             System.out.println("Digite a opção desejada:");
             System.out.println("1 - Login");
             System.out.println("2 - Cadastro");
             System.out.println("9 - Sair");
             opcao = cin.nextInt();
             System.out.println("\n=============================================================================");
-
+            Cliente cliente = new Cliente(null, null, null, null);
             switch (opcao) {
                 //login
                 case 1:
+                    cont = 0;
                     while (true) {
                         if (cont != 0) {
                             System.out.println("Digite 1 para iniciar uma nova tentativa de login ou 9 para voltar ao menu inicial");
@@ -63,10 +65,9 @@ public class Main {
                         cont++;
                         System.out.println("\nDigite o nome do cliente: ");
                         nome = cin.next();
-
                         //busca no hash set Cliente - clientes com login
                         for (Cliente i : clienteSet) {
-                            // Verificacao se o cliente existe
+                            // Verificacao se o cliente existe no banco de dados
                             if (Objects.equals(i.getNome(), nome)) {
                                 System.out.println("\nDigite a senha do cliente: ");
                                 senha = cin.next();
@@ -99,7 +100,7 @@ public class Main {
                     nome = cin.next();
                     System.out.println("\nDigite o CPF do cliente: ");
                     cpf = cin.next();
-                    //VERIFICACAO DE EXISTENCIA DE USUARIO
+                    //Verificação de existência do usuário
                     for (Cliente i : clienteSet) {
                         if (Objects.equals(i.getCpf(), cpf)) {
                             System.out.println("\nUsuário já existente.");
@@ -111,7 +112,7 @@ public class Main {
                             telefone = cin.next();
                             System.out.println("\nCrie uma senha para o cliente: ");
                             senha = cin.next();
-                            clienteSet.add(new Cliente(nome, cpf, telefone, mapaCarrinhodeCompras, senha));
+                            clienteSet.add(cliente = new  Cliente(nome, cpf, telefone, senha));
                             break;
                         }
                     }
@@ -129,23 +130,6 @@ public class Main {
                     break;
             }
 
-            //definição das quantidades disponíveis de cada mercadoria
-//            try {
-//                List<String> estoque = Files.readAllLines(arquivoADM);
-//                Map <String, Integer> AdministracaoEstoque = new HashMap<>();
-//
-//                estoque.forEach((linha) -> {
-//                    String[] linhaQuebrada = linha.split(":");
-//                    AdministracaoEstoque.put(linhaQuebrada[0],linhaQuebrada[1].strip());
-//                });
-//                AdministracaoEstoque.forEach((mercadoria, quantidadeDisponivel) -> {
-//                    mercadorias.add(mercadoria,quantidadeDisponivel);
-//                });
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
-
             while (opcao != 9) {
                 System.out.println("\nDigite a opção desejada:" +
                         "\n1 - Selecionar produtos" +
@@ -154,7 +138,7 @@ public class Main {
                 opcao = cin.nextInt();
 
                 switch (opcao) {
-                    //escolhendo a mercadoria
+                    //escolhendo a mercadoria - montando o carrinho de compras
                     case 1:
                         cont = 0;
                         while (cont == 0) {
@@ -170,25 +154,49 @@ public class Main {
                                 case 1: {
 
                                     String item = "Pão Francês";
-                                    addMercadoria(mercadorias, item, cliente);
+                                    for(Mercadoria i: cozinha)
+                                    {
+                                        if (Objects.equals(i.getNome(), item))
+                                        {
+                                            i.setQuantidade(addMercadoria(estoque,item,cliente) + i.getQuantidade());
+                                        }
+                                    }
                                     cont++;
                                     break;
                                 }
                                 case 2: {
                                     String item = "Pão de Queijo";
-                                    addMercadoria(mercadorias, item, cliente);
+                                    for(Mercadoria i: cozinha)
+                                    {
+                                        if (Objects.equals(i.getNome(), item))
+                                        {
+                                            i.setQuantidade(addMercadoria(estoque,item,cliente) + i.getQuantidade());
+                                        }
+                                    }
                                     cont++;
                                     break;
                                 }
                                 case 3: {
                                     String item = "Biscoito";
-                                    addMercadoria(mercadorias, item, cliente);
+                                    for(Mercadoria i: cozinha)
+                                    {
+                                        if (Objects.equals(i.getNome(), item))
+                                        {
+                                            i.setQuantidade(addMercadoria(estoque,item,cliente) + i.getQuantidade());
+                                        }
+                                    }
                                     cont++;
                                     break;
                                 }
                                 case 4: {
                                     String item = "Broa";
-                                    addMercadoria(mercadorias, item, cliente);
+                                    for(Mercadoria i: cozinha)
+                                    {
+                                        if (Objects.equals(i.getNome(), item))
+                                        {
+                                            i.setQuantidade(addMercadoria(estoque,item,cliente) + i.getQuantidade());
+                                        }
+                                    }
                                     cont++;
                                     break;
                                 }
@@ -198,68 +206,93 @@ public class Main {
                         }
                         break;
                         case 9:
+                            //saída de dados a cada login/cadastro
+                            System.out.println("\n=============================================================================\n");
+                            System.out.println("Dados do cliente ");
+                            System.out.println("Nome: " + cliente.getNome());
+                            System.out.println("CPF: " + cliente.getCpf());
+                            System.out.println("Telefone: " + cliente.getTelefone());
+                            System.out.println("Carrinho de compras: ");
+                            System.out.println("O valor total do carrinho de compras de " + cliente.getNome() + " é de R$ " + cliente.getTotalCompra());
+                            System.out.println("\n=============================================================================\n");
                             break;
                         default:
                             System.out.println("\nOpção inválida. Tente novamente.");
-                }//switch
-            }//while escolha da mercadoria
-        }//whilhe menu inicial
-
-        //atualizando o arquivo de Estoque
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(String.valueOf(arquivoADM)))){
-            for(Mercadoria i:mercadorias) {
+                }
+            }
+        }
+        //saida do arquivo Pedidos
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(String.valueOf(arquivoCozinha)))){
+            for(Mercadoria i:cozinha) {
                 bw.write(i.getNome() + ":" + i.getQuantidade());
                 bw.newLine();
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
-
-        //saída de dados - TESTAR (quase funcionando perfeitamente)
-
-        System.out.println("=============================================================================\n");
-        for (Cliente clientes : clienteSet) {
-            if (clientes.getNome() != null) {
-                System.out.println("Dados do cliente ");
-                System.out.println("Nome: " + clientes.getNome());
-                System.out.println("CPF: " + clientes.getCpf());
-                System.out.println("Telefone: " + clientes.getTelefone());
-                System.out.println("Carrinho de compras: ");
-                mapaCarrinhodeCompras.forEach((chave, valor) -> {
-                    System.out.println("Mercadoria: " + chave);
-                    System.out.println("Quantidade: " + valor);
-                });
-                System.out.println("O valor total do carrinho de compras de " + clientes.getNome() + " é de R$ " + clientes.getTotalCompra()); // ajustar
-                System.out.println("\n=============================================================================\n");
+        //atualizando o arquivo de Estoque
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(String.valueOf(arquivoADM)))){
+            for(Mercadoria i:estoque) {
+                bw.write(i.getNome() + ":" + i.getQuantidade());
+                bw.newLine();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    }//main
+        //atualizando o arquivo de Clientes
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(String.valueOf(arquivoCliente)))){
+            for(Cliente i:clienteSet) {
+                bw.write(i.getNome() + "|" + i.getCpf() + "|" + i.getTelefone() + "|" + i.getSenha());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    private static void addMercadoria(Set<Mercadoria> mercadorias, String item, Cliente cliente) {
-        int qnt;
+    }
+    //Montagem do carrinho de compras
+    private static int addMercadoria(Set<Mercadoria> mercadorias, String item, Cliente cliente) {
+        int qnt = 0;
         double total;
         Scanner cin = new Scanner(System.in);
-        for(Mercadoria i:mercadorias){
-            if (Objects.equals(i.getNome(), item)) {
+        for(Mercadoria k:mercadorias){
+            if (Objects.equals(k.getNome(), item)) {
+                //verifica se a quantidade de mercadoria disponível em estoque é suficiente para o pedido do cliente
                 try {
                     System.out.println("Veja o que temos em estoque hoje");
-                    System.out.println(i.getNome() + ": " + i.getQuantidade());
+                    System.out.println(k.getNome() + ": " + k.getQuantidade());
                     System.out.println("Digite a quantidade de " + item + " que deseja adicionar ao carrinho:");
                     qnt = cin.nextInt();
-                    cliente.adicionarCompra(i, qnt);
-                    cliente.calcularValorTotal(i, qnt);
-                    System.out.println("O valor acrescido no carrinho é de R$ " + i.calculaPreco(qnt));
+                    cliente.adicionarCompra(k, qnt);
+                    cliente.calcularValorTotal(k, qnt);
+                    System.out.println("O valor acrescido no carrinho é de R$ " + k.calculaPreco(qnt));
                 }catch (SemEstoqueException e){
-                    System.out.println(e);
+                    System.out.println(e); //tratando exceção
                 }
                 break;
             }
         }
+        return qnt;
     }
-
-    private static void lerEstoque(Set<Mercadoria> mercadorias){
-        // Leitura do arquivo de estoque e salvamento no set de mercadorias
+    private static void lerCliente(Set<Cliente>  clienteSet){
+        // Leitura do arquivo de estoque e salvamento no hashset de mercadorias
+        try (BufferedReader br = new BufferedReader(new FileReader("Clientes.txt"))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                StringTokenizer st = new StringTokenizer(linha, "|");
+                String nome = st.nextToken();
+                String cpf = st.nextToken();
+                String tel = st.nextToken();
+                String senha = st.nextToken();
+                clienteSet.add(new  Cliente(nome, cpf, tel, senha));
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); //tratando exceção
+        }
+    }
+    private static void lerEstoque(Set<Mercadoria> mercadorias, Set<Mercadoria> cozinha){
+        // Leitura do arquivo de estoque e salvamento no hashset de mercadorias
         try (BufferedReader br = new BufferedReader(new FileReader("AdministracaoEstoque.txt"))) {
             String linha;
             while ((linha = br.readLine()) != null) {
@@ -270,25 +303,21 @@ public class Main {
 
                 if (Objects.equals(produto, "Pão Francês"))
                 {
+                    cozinha.add(new PaoFrances(0));
                     mercadorias.add(new PaoFrances(qnt));
                 }else if(Objects.equals(produto, "Pão de Queijo")){
+                    cozinha.add(new Paodequeijo(0));
                     mercadorias.add(new Paodequeijo(qnt));
                 }else if(Objects.equals(produto, "Biscoito")){
+                    cozinha.add(new Biscoito(0));
                     mercadorias.add(new Biscoito(qnt));
                 }else if(Objects.equals(produto, "Broa")){
+                    cozinha.add(new Broa(0));
                     mercadorias.add(new Broa(qnt));
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); //tratando exceção
         }
     }
 }
-//A fazer:
-//escrita no arquivo (externamente) e leitura do arquivo de gerenciamento de estoque - "alterar definição das quantidades disponíveis de cada mercadoria"
-//escrita e leitura do arquivo dos logins dos clientes
-//escrita do arquivo do carrinho de compras dos clientes
-//carrinho igual para todos os usuarios
-//add no nome sempre tornar minuscula
-
-

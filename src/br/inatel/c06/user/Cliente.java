@@ -5,32 +5,37 @@ import br.inatel.c06.produtos.Mercadoria;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class Cliente {
     // Atributos
     private String cpf, nome, telefone,  senha;
-    private static double totalCompra = 0;
-
+    private double totalCompra = 0;
     Map<String,Integer> comprasMap;
 
     // Construtor
-    public Cliente(String nome, String cpf, String telefone, Map<String, Integer> comprasMap ,String senha) {
+    public Cliente(String nome, String cpf, String telefone, String senha) {
         this.cpf = cpf;
         this.nome = nome;
         this.telefone = telefone;
-        this.comprasMap = comprasMap;
+        this.comprasMap = new HashMap<>();
         this.senha = senha;
     }
     // Getters
     public Map<String, Integer> getComprasMap() {
         return comprasMap;
     }
+    public void getCarrinho(){
+        int qnt;
+        this.comprasMap.forEach((chave, valor) -> {
+            System.out.println("Mercadoria: " + chave);
+            System.out.println("Quantidade: " + valor);
+        });
+    }
     public String getCpf() {
         return cpf;
     }
-
     public double getTotalCompra() {  return totalCompra; }
-
     public String getNome() {
         return nome;
     }
@@ -51,28 +56,28 @@ public class Cliente {
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
-
     public void setTotalCompra(double totalCompra) {
         this.totalCompra = totalCompra;
     }
-
+    //adiconando mercadoria ao carrinho de compras
     public void adicionarCompra(Mercadoria item, int qnt){
-        //add ao carrinho de compras e verificando se tem em estoque com exception
+        int qntItem;
+        //verificando se há quantidade disponível em estoque
         if (item.getQuantidade() >= qnt) {
-            item.setQuantidadeItem(item.getQuantidadeItem() + qnt);
-            this.comprasMap.put(item.getNome(), item.getQuantidadeItem());
+            if (comprasMap.get(item.getNome())!=null) {
+                qntItem = (comprasMap.get(item.getNome()) + qnt);
+            }else{
+                qntItem = qnt;
+            }
+            this.comprasMap.put(item.getNome(), qntItem);
             item.setQuantidade(item.getQuantidade() - qnt);
-            System.out.println("Adicionando " + qnt + " unidasdes no carrinho;");
+            System.out.println("Adicionando " + qnt + " unidades no carrinho");
         }
+        //Exceção quando a quantidade solicitada é acima da disponível
         else
             throw new SemEstoqueException("A quatidade solicitada esta acima da quantidade em estoque!");
     }
-    double total = 0;
     public void calcularValorTotal(Mercadoria item, int qnt) {
         this.setTotalCompra(getTotalCompra() + item.calculaPreco(qnt));
     }
-    //        for (Map.Entry<Mercadoria, Integer> entry : comprasMap.entrySet()) {
-//            Mercadoria mercadoria = entry.getKey();
-//            int quantidade = entry.getValue();
-//        }
 }

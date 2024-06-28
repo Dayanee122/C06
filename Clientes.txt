@@ -1,0 +1,2 @@
+teste|cpf|telefone|123
+Nat|cpf|telefone|123
