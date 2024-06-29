@@ -1,4 +1,4 @@
-Biscoito:50
-Pão Francês:0
+Broa:0
+Pão Francês:100
 Pão de Queijo:0
-Broa:220
+Biscoito:0

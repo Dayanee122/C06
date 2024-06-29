@@ -213,6 +213,7 @@ public class Main {
                             System.out.println("CPF: " + cliente.getCpf());
                             System.out.println("Telefone: " + cliente.getTelefone());
                             System.out.println("Carrinho de compras: ");
+                            cliente.getCarrinho();
                             System.out.println("O valor total do carrinho de compras de " + cliente.getNome() + " é de R$ " + cliente.getTotalCompra());
                             System.out.println("\n=============================================================================\n");
                             break;
